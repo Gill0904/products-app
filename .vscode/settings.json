@@ -9,5 +9,13 @@
         "**/*tsconfig.json": true,
         ".cache": true,
         "retool.config.json": true
+    },
+    "css.validate": false,
+    "tailwindCSS.includeLanguages": {
+        "typescript": "javascript",
+        "typescriptreact": "javascript"
+    },
+    "editor.quickSuggestions": {
+        "strings": true
     }
 }
