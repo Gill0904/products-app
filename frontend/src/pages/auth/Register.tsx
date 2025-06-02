@@ -160,7 +160,7 @@ export function Register() {
             </Button>
             <Button
               type="button"
-              onPress={() => navigate('/auth/login')}
+              onPress={() => navigate('/login')}
               color="secondary"
               className="w-full mt-4"
             >

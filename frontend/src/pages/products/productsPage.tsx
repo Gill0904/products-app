@@ -17,12 +17,22 @@ import { ProductModal } from './productModal';
 import { Page } from '../../components/ui/Page';
 import { useProductModal } from '../../store/useProductModal';
 import { getStatusInfo } from '../../utils/statusTranslate';
+import { Select, SelectItem } from '@heroui/select';
 
 export function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const { openModal } = useProductModal();
+  
+  const [statusFilter, setStatusFilter] = useState<string>('ALL');
 
+  const statusOptions: { key: string; label: string }[] = [
+    { key: 'ALL', label: 'Todos' },
+    { key: 'available', label: 'Disponible' },
+    { key: 'out_of_stock', label: 'Sin stock' },
+    { key: 'discontinued', label: 'Descontinuado' },
+  ];
+  
   const fetchProducts = async () => {
     setLoading(true);
     try {
@@ -50,11 +60,36 @@ export function ProductsPage() {
     fetchProducts();
   }, []);
 
+  const filteredProducts =
+    statusFilter === 'ALL'
+      ? products
+      : products.filter((p) => p.status === statusFilter);
+
+
   return (
     <Page showHeader={true} className="min-h-screen flex items-center justify-center px-4">
       <div className="rounded-xl border border-gray-200 shadow-md overflow-hidden bg-white p-4">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center flex-wrap">
           <h1 className="text-2xl font-bold">Productos</h1>
+          <div className='flex flex-col w-100'>
+            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+              Filtrar por estatus
+            </label>
+            <Select
+              selectedKeys={[statusFilter]}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="max-w-xs mb-4"
+              classNames={{
+                listbox: "bg-white text-black dark:bg-gray-400 dark:text-white"
+              }}
+            >
+              {statusOptions.map((opt) => (
+                <SelectItem key={opt.key}>
+                  {opt.label}
+                </SelectItem>
+              ))}
+            </Select>
+          </div>
           <Button className='hover:bg-gray-100 transition-colors cursor-pointer rounded-md' onPress={() => openModal()}>Nuevo producto</Button>
         </div>
 
@@ -74,7 +109,7 @@ export function ProductsPage() {
           </TableHeader>
           <TableBody
             isLoading={loading}
-            items={products}
+            items={filteredProducts}
             emptyContent="No hay productos"
           >
             {(product) => (
